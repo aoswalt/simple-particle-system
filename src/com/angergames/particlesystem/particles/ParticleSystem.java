@@ -33,6 +33,7 @@ public class ParticleSystem {
 			for(Particle p : particles) {
 				if(!p.isActive()) {
 					p.create(Mouse.pos);
+					break;
 				}
 			}
 		}

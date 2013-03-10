@@ -45,7 +45,12 @@ public class Particle {
 	
 	public int getLifeColor() {
 		double percent = (double)(life) / LIFETIME;
-		return (int) (percent * OLDCOLOR + (1 - percent) * NEWCOLOR);
+		
+		int r = (int) (percent * (NEWCOLOR >> 16 & 0xFF) + (1 - percent) * (OLDCOLOR >> 16 & 0xFF));
+		int g = (int) (percent * (NEWCOLOR >> 8 & 0xFF) + (1 - percent) * (OLDCOLOR >> 8 & 0xFF));
+		int b = (int) (percent * (NEWCOLOR & 0xFF) + (1 - percent) * (OLDCOLOR & 0xFF));
+		
+		return (r << 16) + (g << 8) + b;
 	}
 	
 	public void renderTo(Bitmap b) {
