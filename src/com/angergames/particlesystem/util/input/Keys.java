@@ -4,19 +4,35 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Keys implements KeyListener {
+	
+	public static boolean g;
+	public static boolean w;
+	public static boolean s;
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		toggle(e.getKeyCode(), true);
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		toggle(e.getKeyCode(), false);
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {}
+	
+	private void toggle(int k, boolean state) {
+		switch(k) {
+			case KeyEvent.VK_G: 
+				g = state;
+				break;
+			case KeyEvent.VK_W: 
+				w = state;
+				break;
+			case KeyEvent.VK_S: 
+				s = state;
+				break;
+		}
+	}
 }

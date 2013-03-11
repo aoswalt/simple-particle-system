@@ -1,20 +1,25 @@
 package com.angergames.particlesystem.level;
 
-public class Level {
+import com.angergames.particlesystem.util.math.Vec2;
+
+public class Map {
 	
 	public static final int TILE_SIZE = 32;
 	public static final int TILE_COLOR = 0xBBBBBB;
 	
-	private int width;
-	private int height;
+	public boolean hasGravity = false;
+	public Vec2 gravity = new Vec2(0, 0.25);
+	
+	public int width;
+	public int height;
 	
 	private boolean[] tiles;
 	
-	public Level(int width, int height) {
-		this.width = width / TILE_SIZE;
-		this.height = height / TILE_SIZE;
+	public Map(int width, int height) {
+		this.width = width;
+		this.height = height;
 		
-		tiles = new boolean[this.width * this.height];
+		tiles = new boolean[this.width / TILE_SIZE * this.height / TILE_SIZE];
 	}
 	
 	public void toggleTile(double x, double y) {
@@ -28,5 +33,10 @@ public class Level {
 		int index = (int) ((x / TILE_SIZE) + (y / TILE_SIZE) * width);
 		
 		return index < tiles.length ? tiles[index] : false;
+	}
+	
+	public boolean isSolid(double x, double y) {
+		if(x < 0 || x >= width || y < 0 || y >= height) return true;
+		return isActiveTile(x, y);
 	}
 }

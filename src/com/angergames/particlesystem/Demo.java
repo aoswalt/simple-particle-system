@@ -10,6 +10,7 @@ import java.awt.image.DataBufferInt;
 import javax.swing.JFrame;
 
 import com.angergames.particlesystem.particles.ParticleSystem;
+import com.angergames.particlesystem.util.input.Keys;
 import com.angergames.particlesystem.util.input.Mouse;
 
 public class Demo extends Canvas implements Runnable {
@@ -31,8 +32,8 @@ public class Demo extends Canvas implements Runnable {
 	private ParticleSystem particles = new ParticleSystem(WIDTH, HEIGHT);
 	
 	public void init() {
-		//add listeners
 		this.addMouseListener(new Mouse(this));
+		this.addKeyListener(new Keys());
 		this.setFocusTraversalKeysEnabled(false);
 		this.requestFocus();
 	}

@@ -29,8 +29,10 @@ public class Bitmap {
 	public void render(Bitmap b, int xPos, int yPos) {
 		for(int x = 0; x < b.w; x++) {
 			int xPix = xPos + x;
+			if(xPix < 0 || xPix >= w) continue;
 			for(int y = 0; y < b.h; y++) {
 				int yPix = yPos + y;
+				if(yPix < 0 || yPix >= h) continue;
 				
 				pixels[xPix + yPix * w] = b.pixels[x + y * b.w];
 			}
@@ -38,6 +40,8 @@ public class Bitmap {
 	}
 	
 	public void render(int c, int xPos, int yPos) {
+		if(xPos < 0 || xPos >= w) return;
+		if(yPos < 0 || yPos >= h) return;
 		pixels[xPos + yPos * w] = c; 
 	}
 }

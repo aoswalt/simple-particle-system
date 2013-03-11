@@ -20,17 +20,26 @@ public class Mouse implements MouseListener {
 	
 	public static boolean pressed;
 	public static Vec2 pos = new Vec2();
+	private static Vec2 lastPos = new Vec2();
+	private static Vec2 movement = new Vec2();
 	
 	public Mouse(Component component) {
 		Mouse.component = component;
 	}
 	
 	public static void update() {
+		lastPos.setTo(pos);
 		info = MouseInfo.getPointerInfo();
 		point = info.getLocation();
 		
 		SwingUtilities.convertPointFromScreen(point, component);
-		pos.set(point.x / Demo.SCALE, point.y / Demo.SCALE);
+		pos.setTo(point.x / Demo.SCALE, point.y / Demo.SCALE);
+		
+		movement.setTo(pos).subtract(lastPos);
+	}
+	
+	public static Vec2 getMovement() {
+		return movement;
 	}
 
 	@Override

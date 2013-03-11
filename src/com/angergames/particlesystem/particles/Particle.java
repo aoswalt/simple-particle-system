@@ -1,10 +1,12 @@
 package com.angergames.particlesystem.particles;
 
 import com.angergames.particlesystem.gfx.Bitmap;
+import com.angergames.particlesystem.gfx.Colors;
+import com.angergames.particlesystem.level.Map;
 import com.angergames.particlesystem.util.math.Vec2;
 
 public class Particle {
-	private static final int LIFETIME = 40;
+	private static final int LIFETIME = 80;
 	private static final int NEWCOLOR = 0xFFFFFF;
 	private static final int OLDCOLOR = 0x880000;
 	
@@ -12,8 +14,16 @@ public class Particle {
 	public Vec2 vel = new Vec2();
 	public Vec2 acc = new Vec2();
 	private boolean active = false;
+	private Vec2 lastPos = new Vec2();
+	private Vec2 nextPos = new Vec2();
 	
 	private int life = 0;
+	
+	private Map map;
+	
+	public Particle(Map level) {
+		this.map = level;
+	}
 	
 	public void create(Vec2 v) {
 		create(v.x, v.y);
@@ -23,12 +33,17 @@ public class Particle {
 		return active;
 	}
 	
+	public void destroy() {
+		active = false;
+	}
+	
 	public void create(double x, double y) {
-		pos.set(x, y);
+		pos.setTo(x, y);
+		lastPos.setTo(pos);
 		life = LIFETIME;
 		active = true;
-		vel.set(0, 0);
-		acc.set(0, 0);
+		vel.setTo(0, 0);
+		acc.setTo(0, 0);
 	}
 	
 	public void update(double delta) {
@@ -40,17 +55,32 @@ public class Particle {
 			return;
 		}
 		
+		if(map.hasGravity) {
+			acc.add(map.gravity);
+		}
 		
+		// verlet integration
+		vel.setTo(pos).subtract(lastPos);
+		nextPos.setTo(pos).add(vel).add(acc.scale(delta));
+		
+		if(map.isSolid(nextPos.x, pos.y)) {	//moving x direction
+			nextPos.x = pos.x;
+			vel.x *= -1;
+		}
+		
+		if(map.isSolid(pos.x, nextPos.y)){
+			nextPos.y = pos.y;
+			vel.y *= -1;
+		}
+
+		lastPos.setTo(pos);
+		pos.setTo(nextPos);
 	}
 	
 	public int getLifeColor() {
 		double percent = (double)(life) / LIFETIME;
 		
-		int r = (int) (percent * (NEWCOLOR >> 16 & 0xFF) + (1 - percent) * (OLDCOLOR >> 16 & 0xFF));
-		int g = (int) (percent * (NEWCOLOR >> 8 & 0xFF) + (1 - percent) * (OLDCOLOR >> 8 & 0xFF));
-		int b = (int) (percent * (NEWCOLOR & 0xFF) + (1 - percent) * (OLDCOLOR & 0xFF));
-		
-		return (r << 16) + (g << 8) + b;
+		return Colors.blend(NEWCOLOR, OLDCOLOR, percent);
 	}
 	
 	public void renderTo(Bitmap b) {

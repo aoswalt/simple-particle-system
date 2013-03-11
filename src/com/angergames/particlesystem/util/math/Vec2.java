@@ -10,22 +10,22 @@ public class Vec2 {
 	}
 	
 	public Vec2(double x, double y) {
-		set(x, y);
+		setTo(x, y);
 	}
 	
 	public Vec2(Vec2 v) {
 		this(v.x, v.y);
 	}
 	
-	public Vec2 set(double x, double y) {
+	public Vec2 setTo(double x, double y) {
 		this.x = x;
 		this.y = y;
 		updateLength();
 		return this;
 	}
 	
-	public Vec2 set(Vec2 v) {
-		return set(v.x, v.y);
+	public Vec2 setTo(Vec2 v) {
+		return setTo(v.x, v.y);
 	}
 	
 	private void updateLength() {
