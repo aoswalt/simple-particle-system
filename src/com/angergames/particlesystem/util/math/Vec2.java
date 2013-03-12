@@ -73,9 +73,13 @@ public class Vec2 {
 	}
 	
 	public double distanceTo(Vec2 v) {
+		return distanceTo(v.x, v.y);
+	}
+	
+	public double distanceTo(double x, double y) {
         //sqrt((xDiff)² + (yDiff)²)
-		double xd = v.x - x;
-		double yd = v.y - y;
+		double xd = x - this.x;
+		double yd = y - this.y;
 		return Math.sqrt(xd * xd + yd * yd);
 	}
 	

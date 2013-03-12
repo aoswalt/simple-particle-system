@@ -22,8 +22,10 @@ public class ParticleSystem {
 	private Vec2 spawner;
 	private Vec2 well;
 	private Vec2 wellDir = new Vec2();
-	private double wellMass = 20;
-	private double springConst = 0.003;;
+	int wellIndex = 0;
+	private double wellMass = 30;
+	private double springConst = 0.005;
+	private double gravityConst = 25;
 	
 	public ParticleSystem(int width, int height) {
 		this.width = width;
@@ -37,6 +39,7 @@ public class ParticleSystem {
 		}
 	}
 	
+	boolean pressed = false;
 	public void update(double delta) {
 		if(Keys.g) {
 			map.hasGravity = true;
@@ -52,7 +55,7 @@ public class ParticleSystem {
 			}
 		}
 		
-		if(Keys.w && Mouse.pressed) {
+		if(Keys.w && Mouse.pressed && !pressed) {
 			if(well == null) {
 				well = new Vec2(Mouse.pos);
 			} else {
@@ -77,13 +80,18 @@ public class ParticleSystem {
 			}
 		}
 		
+		map.clearGrid();
 		for(Particle p : particles) {
 			if(p.isActive()) {
 				if(well != null) {
 					double dist = p.pos.distanceTo(well);
-					wellDir.setTo(well).subtract(p.pos).normalize();
-					wellDir.scale(springConst * (dist - wellMass));
+					wellDir.add(well).subtract(p.pos).normalize();
 					
+					if(dist > wellMass * 4) {
+						wellDir.scale(gravityConst * wellMass / (dist * dist));
+					} else {
+						wellDir.scale(springConst * (dist - wellMass));
+					}
 					p.acc.setTo(wellDir);
 				}
 				
@@ -96,7 +104,6 @@ public class ParticleSystem {
 		screen.clear();
 		renderMap();
 		renderParticles();
-		renderLighting();
 	}
 	
 	private void renderMap() {
@@ -123,9 +130,5 @@ public class ParticleSystem {
 				p.renderTo(screen);
 			}
 		}
-	}
-	
-	private void renderLighting() {
-		
 	}
 }

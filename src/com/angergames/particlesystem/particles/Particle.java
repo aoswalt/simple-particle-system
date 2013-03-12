@@ -7,8 +7,8 @@ import com.angergames.particlesystem.util.math.Vec2;
 
 public class Particle {
 	private static final int LIFETIME = 80;
-	private static final int NEWCOLOR = 0xFFFFFF;
-	private static final int OLDCOLOR = 0x880000;
+	private static final int NEWCOLOR = 0xFFFFFFFF;
+	private static final int OLDCOLOR = 0xAA880000;
 	
 	public Vec2 pos = new Vec2();
 	public Vec2 vel = new Vec2();
@@ -16,6 +16,8 @@ public class Particle {
 	private boolean active = false;
 	private Vec2 lastPos = new Vec2();
 	private Vec2 nextPos = new Vec2();
+	private Bitmap point = new Bitmap(1, 1);
+	private Bitmap light = new Bitmap(16, 16);
 	
 	private int life = 0;
 	
@@ -63,29 +65,34 @@ public class Particle {
 		vel.setTo(pos).subtract(lastPos);
 		nextPos.setTo(pos).add(vel).add(acc.scale(delta));
 		
-		if(map.isSolid(nextPos.x, pos.y)) {	//moving x direction
+		if(map.isBlocked(nextPos.x, pos.y)) {	//moving x direction
 			nextPos.x = pos.x;
 			vel.x *= -1;
 		}
 		
-		if(map.isSolid(pos.x, nextPos.y)){
+		if(map.isBlocked(pos.x, nextPos.y)){
 			nextPos.y = pos.y;
 			vel.y *= -1;
 		}
 
 		lastPos.setTo(pos);
 		pos.setTo(nextPos);
+		map.insertIntoGrid(this);
 		
 		acc.setTo(0, 0);
 	}
 	
-	public int getLifeColor() {
+	private int getLifeColor() {
 		double percent = (double)(life) / LIFETIME;
 		
 		return Colors.blend(NEWCOLOR, OLDCOLOR, percent);
 	}
 	
 	public void renderTo(Bitmap b) {
-		b.render(getLifeColor(), (int)pos.x, (int)pos.y);
+		b.render(point.setColor(getLifeColor()), (int)pos.x, (int)pos.y);
+	}
+	
+	public void renderLightTo(Bitmap b) {
+		b.render(light, (int)(pos.x - light.w / 2), (int)(pos.y - light.h / 2));
 	}
 }

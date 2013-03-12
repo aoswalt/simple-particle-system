@@ -1,5 +1,7 @@
 package com.angergames.particlesystem.level;
 
+import com.angergames.particlesystem.particles.Particle;
+import com.angergames.particlesystem.util.CollisionGrid;
 import com.angergames.particlesystem.util.math.Vec2;
 
 public class Map {
@@ -14,10 +16,12 @@ public class Map {
 	public int height;
 	
 	private boolean[] tiles;
+	private CollisionGrid grid;
 	
 	public Map(int width, int height) {
 		this.width = width;
 		this.height = height;
+		grid = new CollisionGrid(this);
 		
 		tiles = new boolean[this.width / TILE_SIZE * this.height / TILE_SIZE];
 	}
@@ -35,8 +39,18 @@ public class Map {
 		return index < tiles.length ? tiles[index] : false;
 	}
 	
-	public boolean isSolid(double x, double y) {
+	public boolean isBlocked(double x, double y) {
 		if(x < 0 || x >= width || y < 0 || y >= height) return true;
-		return isActiveTile(x, y);
+		if(isActiveTile(x, y)) return true;
+		if(grid.isBlocked(x, y)) return true;
+		return false;
+	}
+	
+	public void insertIntoGrid(Particle p) {
+		grid.insert(p);
+	}
+	
+	public void clearGrid() {
+		grid.clear();
 	}
 }
