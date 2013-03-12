@@ -22,7 +22,8 @@ public class ParticleSystem {
 	private Vec2 spawner;
 	private Vec2 well;
 	private Vec2 wellDir = new Vec2();
-	private double wellMass = 75;
+	private double wellMass = 20;
+	private double springConst = 0.003;;
 	
 	public ParticleSystem(int width, int height) {
 		this.width = width;
@@ -81,20 +82,10 @@ public class ParticleSystem {
 				if(well != null) {
 					double dist = p.pos.distanceTo(well);
 					wellDir.setTo(well).subtract(p.pos).normalize();
-					// F = G * m1 * m2 / dist * dist
-					wellDir.scale(wellMass / dist);
+					wellDir.scale(springConst * (dist - wellMass));
 					
-					double dx = p.pos.x - well.x;
-					double dy = p.pos.y - well.y;
-					double angle = Math.atan2(dy, dx);
-					//System.out.println(Math.toDegrees(angle));
-					dist = Math.sqrt(dx * dx + dy * dy);
-					double f = wellMass / (dist * dist);
-					
-					wellDir.setTo(f * Math.sin(angle), f * Math.cos(angle));
+					p.acc.setTo(wellDir);
 				}
-				
-				p.acc.setTo(wellDir);
 				
 				p.update(delta);
 			}
@@ -103,12 +94,12 @@ public class ParticleSystem {
 	
 	public void render() {
 		screen.clear();
-		renderLevel();
+		renderMap();
 		renderParticles();
 		renderLighting();
 	}
 	
-	private void renderLevel() {
+	private void renderMap() {
 		Vec2 dist = new Vec2();
 		for(int x = 0; x < width; x++) {
 			for(int y = 0; y < height; y++) {
@@ -116,7 +107,9 @@ public class ParticleSystem {
 					screen.pixels[x + y * width] = Map.TILE_COLOR;
 				} else if(well != null){
 					dist.setTo(well).subtract(x, y);
-					if(dist.length <= wellMass) {
+					if(dist.length <= 2) {
+						screen.pixels[x + y * width] = 0xFF0000;
+					} else if(dist.length <= wellMass) {
 						screen.pixels[x + y * width] = Colors.blend(0, 0x220099, dist.length / wellMass);
 					}
 				}

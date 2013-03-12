@@ -75,6 +75,8 @@ public class Particle {
 
 		lastPos.setTo(pos);
 		pos.setTo(nextPos);
+		
+		acc.setTo(0, 0);
 	}
 	
 	public int getLifeColor() {

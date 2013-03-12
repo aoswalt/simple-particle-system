@@ -8,7 +8,7 @@ public class Map {
 	public static final int TILE_COLOR = 0xBBBBBB;
 	
 	public boolean hasGravity = false;
-	public Vec2 gravity = new Vec2(0, 0.25);
+	public Vec2 gravity = new Vec2(0, 0.1);
 	
 	public int width;
 	public int height;
