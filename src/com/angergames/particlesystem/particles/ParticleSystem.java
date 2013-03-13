@@ -5,6 +5,7 @@ import com.angergames.particlesystem.gfx.Colors;
 import com.angergames.particlesystem.level.Map;
 import com.angergames.particlesystem.util.input.Keys;
 import com.angergames.particlesystem.util.input.Mouse;
+import com.angergames.particlesystem.util.math.Math2;
 import com.angergames.particlesystem.util.math.Vec2;
 
 public class ParticleSystem {
@@ -24,7 +25,7 @@ public class ParticleSystem {
 	private Vec2 wellDir = new Vec2();
 	int wellIndex = 0;
 	private double wellMass = 30;
-	private double springConst = 0.005;
+	//private double springConst = 0.005;
 	private double gravityConst = 25;
 	
 	public ParticleSystem(int width, int height) {
@@ -39,7 +40,6 @@ public class ParticleSystem {
 		}
 	}
 	
-	boolean pressed = false;
 	public void update(double delta) {
 		if(Keys.g) {
 			map.hasGravity = true;
@@ -55,7 +55,7 @@ public class ParticleSystem {
 			}
 		}
 		
-		if(Keys.w && Mouse.pressed && !pressed) {
+		if(Keys.w && Mouse.pressed) {
 			if(well == null) {
 				well = new Vec2(Mouse.pos);
 			} else {
@@ -63,7 +63,11 @@ public class ParticleSystem {
 			}
 		}
 		
-		if((Mouse.pressed || spawner != null) & !Keys.w) {
+		if(Keys.m && Mouse.pressed) {
+			map.toggleTile(Mouse.pos);
+		}
+		
+		if((Mouse.pressed || spawner != null) && !Keys.w && !Keys.m) {
 			int i = 0;
 			for(Particle p : particles) {
 				if(i == 10) break;
@@ -71,6 +75,8 @@ public class ParticleSystem {
 				if(!p.isActive()) {
 					if(spawner == null) {
 						p.create(Mouse.pos);
+						//p.create(Mouse.pos.add(Math.random() - 0.5, Math.random() - 0.5));
+						//p.create(Mouse.pos.add(4 * (Math.random() - 0.5), 4 * (Math.random() - 0.5)));
 					} else {
 						p.create(spawner);
 					}
@@ -86,12 +92,17 @@ public class ParticleSystem {
 				if(well != null) {
 					double dist = p.pos.distanceTo(well);
 					wellDir.add(well).subtract(p.pos).normalize();
-					
+					/*
 					if(dist > wellMass * 4) {
 						wellDir.scale(gravityConst * wellMass / (dist * dist));
 					} else {
 						wellDir.scale(springConst * (dist - wellMass));
 					}
+					*/
+					double gravAcc = gravityConst * wellMass / (dist * dist);
+					gravAcc = Math2.clamp(0.025, 0.25, gravAcc);
+					wellDir.scale(gravAcc);
+					
 					p.acc.setTo(wellDir);
 				}
 				

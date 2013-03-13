@@ -8,6 +8,7 @@ public class Keys implements KeyListener {
 	public static boolean g;
 	public static boolean w;
 	public static boolean s;
+	public static boolean m;
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -32,6 +33,9 @@ public class Keys implements KeyListener {
 				break;
 			case KeyEvent.VK_S: 
 				s = state;
+				break;
+			case KeyEvent.VK_M: 
+				m = state;
 				break;
 		}
 	}

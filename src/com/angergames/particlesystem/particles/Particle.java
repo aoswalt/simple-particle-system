@@ -17,7 +17,6 @@ public class Particle {
 	private Vec2 lastPos = new Vec2();
 	private Vec2 nextPos = new Vec2();
 	private Bitmap point = new Bitmap(1, 1);
-	private Bitmap light = new Bitmap(16, 16);
 	
 	private int life = 0;
 	
@@ -90,9 +89,5 @@ public class Particle {
 	
 	public void renderTo(Bitmap b) {
 		b.render(point.setColor(getLifeColor()), (int)pos.x, (int)pos.y);
-	}
-	
-	public void renderLightTo(Bitmap b) {
-		b.render(light, (int)(pos.x - light.w / 2), (int)(pos.y - light.h / 2));
 	}
 }

@@ -6,7 +6,7 @@ import com.angergames.particlesystem.util.math.Vec2;
 
 public class Map {
 	
-	public static final int TILE_SIZE = 32;
+	public static final int TILE_SIZE = 16;
 	public static final int TILE_COLOR = 0xBBBBBB;
 	
 	public boolean hasGravity = false;
@@ -15,28 +15,33 @@ public class Map {
 	public int width;
 	public int height;
 	
-	private boolean[] tiles;
+	private int rows;
+	private int cols;
+	
+	private boolean[][] tiles;
 	private CollisionGrid grid;
 	
 	public Map(int width, int height) {
 		this.width = width;
 		this.height = height;
+		this.rows = height / TILE_SIZE;
+		this.cols = width / TILE_SIZE;
 		grid = new CollisionGrid(this);
 		
-		tiles = new boolean[this.width / TILE_SIZE * this.height / TILE_SIZE];
+		tiles = new boolean[rows + 1][cols + 1];	//handles overflow
+		tiles[5][5] = true;
+	}
+	
+	public void toggleTile(Vec2 v) {
+		toggleTile(v.x, v.y);
 	}
 	
 	public void toggleTile(double x, double y) {
-		int index = (int) ((x / TILE_SIZE) + (y / TILE_SIZE) * width);
-		if(index >= tiles.length) return;
-		
-		tiles[index] = !tiles[index];
+		tiles[(int) (y / TILE_SIZE)][(int) (x / TILE_SIZE)] = !tiles[(int) (y / TILE_SIZE)][(int) (x / TILE_SIZE)];
 	}
 	
 	public boolean isActiveTile(double x, double y) {
-		int index = (int) ((x / TILE_SIZE) + (y / TILE_SIZE) * width);
-		
-		return index < tiles.length ? tiles[index] : false;
+		return tiles[(int) (y / TILE_SIZE)][(int) (x / TILE_SIZE)];
 	}
 	
 	public boolean isBlocked(double x, double y) {
