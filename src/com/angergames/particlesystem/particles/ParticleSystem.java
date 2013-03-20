@@ -28,6 +28,8 @@ public class ParticleSystem {
 	//private double springConst = 0.005;
 	private double gravityConst = 25;
 	
+	private int mapTileTime = 10;
+	
 	public ParticleSystem(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -41,52 +43,16 @@ public class ParticleSystem {
 	}
 	
 	public void update(double delta) {
-		if(Keys.g) {
-			map.hasGravity = true;
-		} else {
-			map.hasGravity = false;
-		}
+		handleInput();
 		
-		if(Keys.s && Mouse.pressed) {
-			if(spawner == null) {
-				spawner = new Vec2(Mouse.pos);
-			} else {
-				spawner.setTo(Mouse.pos);
-			}
+		/*
+		// clear collision tree and re-add all particles 
+		map.clearCollisionTree();
+		for(Particle p : particles) {
+			if(p.isActive()) map.insertIntoTree(p);
 		}
+		*/
 		
-		if(Keys.w && Mouse.pressed) {
-			if(well == null) {
-				well = new Vec2(Mouse.pos);
-			} else {
-				well.setTo(Mouse.pos);
-			}
-		}
-		
-		if(Keys.m && Mouse.pressed) {
-			map.toggleTile(Mouse.pos);
-		}
-		
-		if((Mouse.pressed || spawner != null) && !Keys.w && !Keys.m) {
-			int i = 0;
-			for(Particle p : particles) {
-				if(i == 10) break;
-				
-				if(!p.isActive()) {
-					if(spawner == null) {
-						p.create(Mouse.pos);
-						//p.create(Mouse.pos.add(Math.random() - 0.5, Math.random() - 0.5));
-						//p.create(Mouse.pos.add(4 * (Math.random() - 0.5), 4 * (Math.random() - 0.5)));
-					} else {
-						p.create(spawner);
-					}
-					p.pos.add(Math.random() - 0.5, Math.random() - 0.5);
-					i++;
-				}
-			}
-		}
-		
-		map.clearGrid();
 		for(Particle p : particles) {
 			if(p.isActive()) {
 				if(well != null) {
@@ -111,6 +77,55 @@ public class ParticleSystem {
 		}
 	}
 	
+	private void handleInput() {
+		if(Keys.g) {
+			map.hasGravity = true;
+		} else {
+			map.hasGravity = false;
+		}
+		
+		if(Keys.s && Mouse.pressed) {
+			if(spawner == null) {
+				spawner = new Vec2(Mouse.pos);
+			} else {
+				spawner.setTo(Mouse.pos);
+			}
+		}
+		
+		if(Keys.w && Mouse.pressed) {
+			if(well == null) {
+				well = new Vec2(Mouse.pos);
+			} else {
+				well.setTo(Mouse.pos);
+			}
+		}
+		
+		mapTileTime--;
+		if(Keys.m && Mouse.pressed && mapTileTime <= 0) {
+			map.toggleTile(Mouse.pos);
+			mapTileTime = 10;
+		}
+		
+		if((Mouse.pressed || spawner != null) && !Keys.w && !Keys.m) {
+			int i = 0;
+			for(Particle p : particles) {
+				if(i == 10) break;
+				
+				if(!p.isActive()) {
+					if(spawner == null) {
+						p.create(Mouse.pos);
+						//p.create(Mouse.pos.add(Math.random() - 0.5, Math.random() - 0.5));
+						//p.create(Mouse.pos.add(4 * (Math.random() - 0.5), 4 * (Math.random() - 0.5)));
+					} else {
+						p.create(spawner);
+					}
+					p.pos.add(Math.random() - 0.5, Math.random() - 0.5);
+					i++;
+				}
+			}
+		}
+	}
+	
 	public void render() {
 		screen.clear();
 		renderMap();
@@ -121,6 +136,7 @@ public class ParticleSystem {
 		Vec2 dist = new Vec2();
 		for(int x = 0; x < width; x++) {
 			for(int y = 0; y < height; y++) {
+				
 				if(map.isActiveTile(x, y)) {
 					screen.pixels[x + y * width] = Map.TILE_COLOR;
 				} else if(well != null){
@@ -129,6 +145,12 @@ public class ParticleSystem {
 						screen.pixels[x + y * width] = 0xFF0000;
 					} else if(dist.length <= wellMass) {
 						screen.pixels[x + y * width] = Colors.blend(0, 0x220099, dist.length / wellMass);
+					}
+				}
+				
+				if(Keys.m) {
+					if(x % Map.TILE_SIZE == 0 || y % Map.TILE_SIZE == 0) {
+						screen.pixels[x + y * width] = 0xFF006600;
 					}
 				}
 			}

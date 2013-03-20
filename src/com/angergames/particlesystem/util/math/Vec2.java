@@ -33,7 +33,7 @@ public class Vec2 {
 	}
 	
 	public String toString() {
-		return "[" + x + ", " + y + "  len: " + length + "]";
+		return "[" + x + ", " + y + "]  len: " + length;
 	}
 	
 	public Vec2 add(Vec2 v) {

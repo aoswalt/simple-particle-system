@@ -73,12 +73,42 @@ public class Particle {
 			nextPos.y = pos.y;
 			vel.y *= -1;
 		}
+		
+		//checkCOllision(nextPos);
 
 		lastPos.setTo(pos);
 		pos.setTo(nextPos);
-		map.insertIntoGrid(this);
 		
 		acc.setTo(0, 0);
+	}
+	
+	private void checkCOllision(Vec2 nextPos) {
+		for(Particle p : map.retrieveCollidable(this)) {
+			/*
+			if(nextPos.x == p.pos.x) {
+				nextPos.x = pos.x;
+			}
+			
+			if(nextPos.y == p.pos.y) {
+				nextPos.y = pos.y;
+			}
+			*/
+			
+			
+			if(p.pos.x - 0.1 <= nextPos.x && p.pos.x + 0.1 >= nextPos.x) {
+				nextPos.x = pos.x;
+			}
+			if(p.pos.y - 0.1 <= nextPos.y && p.pos.y + 0.1 >= nextPos.y) {
+				nextPos.y = pos.y;
+			}
+			
+			
+			/*
+		    if(p.pos.x - 0.5 <= nextPos.x && p.pos.x + 0.5 >= nextPos.x) {
+				return true;
+			}
+			*/
+		}
 	}
 	
 	private int getLifeColor() {
