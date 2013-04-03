@@ -31,7 +31,7 @@ public class ParticleSystem {
 	private double gravityConst = 25;
 	
 	private int mapTileTime = 10;
-	private int gravityWellTime = 20;
+	private int gravityWellTime = 16;
 	
 	public ParticleSystem(int width, int height) {
 		this.width = width;
@@ -70,7 +70,7 @@ public class ParticleSystem {
 								wellDir.scale(springConst * (dist - wellMass));
 							}
 							*/
-							double gravAcc = gravityConst * wellMass / (dist * dist);
+							double gravAcc = gravityConst * w.mass / (dist * dist);
 							gravAcc = Math2.clamp(0.025, 0.25, gravAcc);
 							wellDir.scale(gravAcc);
 							
@@ -102,12 +102,12 @@ public class ParticleSystem {
 		gravityWellTime--;
 		if(Keys.w && Mouse.leftPressed && gravityWellTime <= 0) {
 			if(wells.isEmpty()) {
-				wells.add(new GravityWell(Mouse.pos, 30));
+				wells.add(new GravityWell(Mouse.pos, wellMass));
 			} else {
 				boolean add = true;
 				for(GravityWell w : wells) {
 					if(w.removed) {
-						w.set(Mouse.pos, 30);
+						w.set(Mouse.pos, wellMass);
 						add = false;
 						break;
 					}
@@ -116,19 +116,28 @@ public class ParticleSystem {
 					wells.add(new GravityWell(Mouse.pos, 30));
 				}
 			}
-			gravityWellTime = 20;
+			gravityWellTime = 16;
 		}
 		
 		if(Keys.w && Mouse.rightPressed) {
 			double distanceLimitMod = 2;
 			GravityWell closest = null;
-			double closestDist;
+			double closestDist = -1;
 			if(!wells.isEmpty()) {
 				for(GravityWell w : wells) {
-					if(Mouse.pos.distanceTo(w.pos) <= w.mass / distanceLimitMod) {
-						w.removed = true;
-						break;
+					double distanceTo = Mouse.pos.distanceTo(w.pos);
+					if(distanceTo <= w.mass / distanceLimitMod) {
+						if(closestDist == -1) {
+							closestDist = distanceTo;
+							closest = w;
+						} else if(distanceTo < closestDist) {
+							closestDist = distanceTo;
+							closest = w;
+						}
 					}
+				}
+				if(closest != null) {
+					closest.removed = true;
 				}
 			}
 		}
@@ -177,9 +186,9 @@ public class ParticleSystem {
 						if(!w.removed) {
 							dist.setTo(w.pos).subtract(x, y);
 							if(dist.length <= 2) {
-								screen.pixels[x + y * width] = 0xFF0000;
-							} else if(dist.length <= wellMass) {
-								screen.pixels[x + y * width] = Colors.blend(0, 0x220099, dist.length / wellMass);
+								//screen.pixels[x + y * width] = 0xFF0000;
+							} else if(dist.length <= w.mass) {
+								screen.pixels[x + y * width] = Colors.blend(0, 0x220099, dist.length / w.mass);
 							}
 						}
 					}
