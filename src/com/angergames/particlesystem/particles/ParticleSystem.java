@@ -99,6 +99,10 @@ public class ParticleSystem {
 			}
 		}
 		
+		if(Keys.s && Mouse.rightPressed) {
+			spawner = null;
+		}
+		
 		gravityWellTime--;
 		if(Keys.w && Mouse.leftPressed && gravityWellTime <= 0) {
 			if(wells.isEmpty()) {
