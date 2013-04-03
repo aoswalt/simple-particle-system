@@ -18,7 +18,8 @@ public class Mouse implements MouseListener {
 	private static Point point;
 	private static PointerInfo info;
 	
-	public static boolean pressed;
+	public static boolean leftPressed;
+	public static boolean rightPressed;
 	public static Vec2 pos = new Vec2();
 	private static Vec2 lastPos = new Vec2();
 	private static Vec2 movement = new Vec2();
@@ -44,12 +45,22 @@ public class Mouse implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		pressed = true;
+		if(e.getButton() == MouseEvent.BUTTON1) {
+			leftPressed = true;
+		}
+		if(e.getButton() == MouseEvent.BUTTON3) {
+			rightPressed = true;
+		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		pressed = false;
+		if(e.getButton() == MouseEvent.BUTTON1) {
+			leftPressed = false;
+		}
+		if(e.getButton() == MouseEvent.BUTTON3) {
+			rightPressed = false;
+		}
 	}
 
 	@Override

@@ -1,7 +1,10 @@
 package com.angergames.particlesystem.particles;
 
+import java.util.ArrayList;
+
 import com.angergames.particlesystem.gfx.Bitmap;
 import com.angergames.particlesystem.gfx.Colors;
+import com.angergames.particlesystem.level.GravityWell;
 import com.angergames.particlesystem.level.Map;
 import com.angergames.particlesystem.util.input.Keys;
 import com.angergames.particlesystem.util.input.Mouse;
@@ -19,16 +22,16 @@ public class ParticleSystem {
 	private Map map;
 	
 	private Particle[] particles = new Particle[PARTICLE_COUNT];
+	private ArrayList<GravityWell> wells = new ArrayList<GravityWell>();
 	
 	private Vec2 spawner;
-	private Vec2 well;
 	private Vec2 wellDir = new Vec2();
-	int wellIndex = 0;
 	private double wellMass = 30;
 	//private double springConst = 0.005;
 	private double gravityConst = 25;
 	
 	private int mapTileTime = 10;
+	private int gravityWellTime = 20;
 	
 	public ParticleSystem(int width, int height) {
 		this.width = width;
@@ -55,21 +58,25 @@ public class ParticleSystem {
 		
 		for(Particle p : particles) {
 			if(p.isActive()) {
-				if(well != null) {
-					double dist = p.pos.distanceTo(well);
-					wellDir.add(well).subtract(p.pos).normalize();
-					/*
-					if(dist > wellMass * 4) {
-						wellDir.scale(gravityConst * wellMass / (dist * dist));
-					} else {
-						wellDir.scale(springConst * (dist - wellMass));
+				if(!wells.isEmpty()) {
+					for(GravityWell w : wells) {
+						if(!w.removed) {
+							double dist = p.pos.distanceTo(w.pos);
+							wellDir.add(w.pos).subtract(p.pos).normalize();
+							/*
+							if(dist > wellMass * 4) {
+								wellDir.scale(gravityConst * wellMass / (dist * dist));
+							} else {
+								wellDir.scale(springConst * (dist - wellMass));
+							}
+							*/
+							double gravAcc = gravityConst * wellMass / (dist * dist);
+							gravAcc = Math2.clamp(0.025, 0.25, gravAcc);
+							wellDir.scale(gravAcc);
+							
+							p.acc.add(wellDir);
+						}
 					}
-					*/
-					double gravAcc = gravityConst * wellMass / (dist * dist);
-					gravAcc = Math2.clamp(0.025, 0.25, gravAcc);
-					wellDir.scale(gravAcc);
-					
-					p.acc.setTo(wellDir);
 				}
 				
 				p.update(delta);
@@ -84,7 +91,7 @@ public class ParticleSystem {
 			map.hasGravity = false;
 		}
 		
-		if(Keys.s && Mouse.pressed) {
+		if(Keys.s && Mouse.leftPressed) {
 			if(spawner == null) {
 				spawner = new Vec2(Mouse.pos);
 			} else {
@@ -92,21 +99,47 @@ public class ParticleSystem {
 			}
 		}
 		
-		if(Keys.w && Mouse.pressed) {
-			if(well == null) {
-				well = new Vec2(Mouse.pos);
+		gravityWellTime--;
+		if(Keys.w && Mouse.leftPressed && gravityWellTime <= 0) {
+			if(wells.isEmpty()) {
+				wells.add(new GravityWell(Mouse.pos, 30));
 			} else {
-				well.setTo(Mouse.pos);
+				boolean add = true;
+				for(GravityWell w : wells) {
+					if(w.removed) {
+						w.set(Mouse.pos, 30);
+						add = false;
+						break;
+					}
+				}
+				if(add) {
+					wells.add(new GravityWell(Mouse.pos, 30));
+				}
+			}
+			gravityWellTime = 20;
+		}
+		
+		if(Keys.w && Mouse.rightPressed) {
+			double distanceLimitMod = 2;
+			GravityWell closest = null;
+			double closestDist;
+			if(!wells.isEmpty()) {
+				for(GravityWell w : wells) {
+					if(Mouse.pos.distanceTo(w.pos) <= w.mass / distanceLimitMod) {
+						w.removed = true;
+						break;
+					}
+				}
 			}
 		}
 		
 		mapTileTime--;
-		if(Keys.m && Mouse.pressed && mapTileTime <= 0) {
+		if(Keys.m && Mouse.leftPressed && mapTileTime <= 0) {
 			map.toggleTile(Mouse.pos);
 			mapTileTime = 10;
 		}
 		
-		if((Mouse.pressed || spawner != null) && !Keys.w && !Keys.m) {
+		if((Mouse.leftPressed || spawner != null) && !Keys.w && !Keys.m) {
 			int i = 0;
 			for(Particle p : particles) {
 				if(i == 10) break;
@@ -139,12 +172,16 @@ public class ParticleSystem {
 				
 				if(map.isActiveTile(x, y)) {
 					screen.pixels[x + y * width] = Map.TILE_COLOR;
-				} else if(well != null){
-					dist.setTo(well).subtract(x, y);
-					if(dist.length <= 2) {
-						screen.pixels[x + y * width] = 0xFF0000;
-					} else if(dist.length <= wellMass) {
-						screen.pixels[x + y * width] = Colors.blend(0, 0x220099, dist.length / wellMass);
+				} else if(!wells.isEmpty()){
+					for(GravityWell w : wells) {
+						if(!w.removed) {
+							dist.setTo(w.pos).subtract(x, y);
+							if(dist.length <= 2) {
+								screen.pixels[x + y * width] = 0xFF0000;
+							} else if(dist.length <= wellMass) {
+								screen.pixels[x + y * width] = Colors.blend(0, 0x220099, dist.length / wellMass);
+							}
+						}
 					}
 				}
 				
