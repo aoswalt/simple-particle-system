@@ -30,7 +30,6 @@ public class ParticleSystem {
 	//private double springConst = 0.005;
 	private double gravityConst = 25;
 	
-	private int mapTileTime = 10;
 	private int gravityWellTime = 16;
 	
 	public ParticleSystem(int width, int height) {
@@ -146,10 +145,12 @@ public class ParticleSystem {
 			}
 		}
 		
-		mapTileTime--;
-		if(Keys.m && Mouse.leftPressed && mapTileTime <= 0) {
-			map.toggleTile(Mouse.pos);
-			mapTileTime = 10;
+		if(Keys.m && Mouse.leftPressed) {
+			map.setTile(Mouse.pos);
+		}
+		
+		if(Keys.m && Mouse.rightPressed) {
+			map.clearTile(Mouse.pos);
 		}
 		
 		if((Mouse.leftPressed || spawner != null) && !Keys.w && !Keys.m) {

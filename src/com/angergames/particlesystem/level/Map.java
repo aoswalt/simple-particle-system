@@ -42,6 +42,22 @@ public class Map {
 		tiles[(int) (y / TILE_SIZE)][(int) (x / TILE_SIZE)] = !tiles[(int) (y / TILE_SIZE)][(int) (x / TILE_SIZE)];
 	}
 	
+	public void setTile(Vec2 v) {
+		setTile(v.x, v.y);
+	}
+	
+	public void setTile(double x, double y) {
+		tiles[(int) (y / TILE_SIZE)][(int) (x / TILE_SIZE)] = true;
+	}
+	
+	public void clearTile(Vec2 v) {
+		clearTile(v.x, v.y);
+	}
+	
+	public void clearTile(double x, double y) {
+		tiles[(int) (y / TILE_SIZE)][(int) (x / TILE_SIZE)] = false;
+	}
+	
 	public boolean isActiveTile(double x, double y) {
 		return tiles[(int) (y / TILE_SIZE)][(int) (x / TILE_SIZE)];
 	}
