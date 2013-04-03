@@ -30,7 +30,7 @@ public class ParticleSystem {
 	//private double springConst = 0.005;
 	private double gravityConst = 25;
 	
-	private int gravityWellTime = 16;
+	private boolean canPlaceGravityWell = true;
 	
 	public ParticleSystem(int width, int height) {
 		this.width = width;
@@ -102,8 +102,7 @@ public class ParticleSystem {
 			spawner = null;
 		}
 		
-		gravityWellTime--;
-		if(Keys.w && Mouse.leftPressed && gravityWellTime <= 0) {
+		if(Keys.w && Mouse.leftPressed && canPlaceGravityWell) {
 			if(wells.isEmpty()) {
 				wells.add(new GravityWell(Mouse.pos, wellMass));
 			} else {
@@ -119,7 +118,9 @@ public class ParticleSystem {
 					wells.add(new GravityWell(Mouse.pos, 30));
 				}
 			}
-			gravityWellTime = 16;
+			canPlaceGravityWell = false;
+		} else if(!Keys.w || !Mouse.leftPressed){
+			canPlaceGravityWell = true;
 		}
 		
 		if(Keys.w && Mouse.rightPressed) {
