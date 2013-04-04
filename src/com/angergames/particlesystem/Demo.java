@@ -1,7 +1,9 @@
 package com.angergames.particlesystem;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -105,9 +107,32 @@ public class Demo extends Canvas implements Runnable {
 		
 		Graphics g = bs.getDrawGraphics();
 		g.drawImage(img, 0, 0, (int)(WIDTH * SCALE), (int)(HEIGHT * SCALE), null);
+		if(Keys.h) {
+			drawHelpText(g);
+		}
 		
 		g.dispose();
 		bs.show();
+	}
+
+	private void drawHelpText(Graphics g) {
+		int left = (int)((WIDTH - 95) * SCALE);
+		int top = 15;
+		int lineSpace = 15;
+		
+		g.setFont(Font.getFont("Verdana"));
+		g.setColor(Color.white);
+		g.drawString("Help ", left, top);
+		g.drawString("  g: hold for gravity", left, top += lineSpace);
+		g.drawString("  s: spawner", left, top += lineSpace);
+		g.drawString("    leftMouse: set spawner", left, top += lineSpace);
+		g.drawString("    rightMouse: remove spawner", left, top += lineSpace);
+		g.drawString("  w: gravity well", left, top += lineSpace);
+		g.drawString("    leftMouse: add gravity well", left, top += lineSpace);
+		g.drawString("    rightMouse: remove gravity well", left, top += lineSpace);
+		g.drawString("  m: map tiles", left, top += lineSpace);
+		g.drawString("    leftMouse: add wall tile", left, top += lineSpace);
+		g.drawString("    rightMouse: remove wall tile", left, top += lineSpace);
 	}
 
 	public static void main(String[] args) {
