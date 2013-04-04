@@ -26,11 +26,13 @@ public class ParticleSystem {
 	
 	private Vec2 spawner;
 	private Vec2 wellDir = new Vec2();
-	private double wellMass = 30;
+	private double wellMass = 0;
 	//private double springConst = 0.005;
 	private double gravityConst = 25;
 	
 	private boolean canPlaceGravityWell = true;
+	private boolean settingMass = false;
+	private GravityWell settingWell;
 	
 	public ParticleSystem(int width, int height) {
 		this.width = width;
@@ -102,25 +104,34 @@ public class ParticleSystem {
 			spawner = null;
 		}
 		
-		if(Keys.w && Mouse.leftPressed && canPlaceGravityWell) {
+		if(Keys.w && Mouse.leftPressed && canPlaceGravityWell && !settingMass) {
 			if(wells.isEmpty()) {
-				wells.add(new GravityWell(Mouse.pos, wellMass));
+				settingWell = new GravityWell(Mouse.pos, wellMass);
+				wells.add(settingWell);
 			} else {
 				boolean add = true;
 				for(GravityWell w : wells) {
 					if(w.removed) {
 						w.set(Mouse.pos, wellMass);
+						settingWell = w;
 						add = false;
 						break;
 					}
 				}
 				if(add) {
-					wells.add(new GravityWell(Mouse.pos, 30));
+					settingWell = new GravityWell(Mouse.pos, wellMass);
+					wells.add(settingWell);
 				}
 			}
 			canPlaceGravityWell = false;
+			settingMass = true;
 		} else if(!Keys.w || !Mouse.leftPressed){
 			canPlaceGravityWell = true;
+			settingMass = false;
+		}
+		
+		if(Keys.w && Mouse.leftPressed && !canPlaceGravityWell && settingMass) {
+			settingWell.setMass(settingWell.pos.distanceTo(Mouse.pos));
 		}
 		
 		if(Keys.w && Mouse.rightPressed) {
@@ -154,7 +165,8 @@ public class ParticleSystem {
 			map.clearTile(Mouse.pos);
 		}
 		
-		if((Mouse.leftPressed || spawner != null) && !Keys.w && !Keys.m) {
+		//create particles if a spawner is there or mouse is held down without keys
+		if((spawner != null) || (Mouse.leftPressed && !Keys.w && !Keys.m)) {
 			int i = 0;
 			for(Particle p : particles) {
 				if(i == 10) break;

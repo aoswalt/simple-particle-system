@@ -18,4 +18,9 @@ public class GravityWell {
 		this.mass = mass;
 		removed = false;
 	}
+	
+	public void setMass(double mass) {
+		this.mass = mass;
+		//TODO set bitmap
+	}
 }
