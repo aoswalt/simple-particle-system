@@ -3,6 +3,7 @@ package com.angergames.particlesystem;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -37,6 +38,8 @@ public class Demo extends Canvas implements Runnable {
 	private Thread thread;
 	
 	private ParticleSystem particles = new ParticleSystem(WIDTH, HEIGHT);
+	
+	private Font font = new Font("Verdana", Font.PLAIN, 12);
 	
 	public void init() {
 		this.addMouseListener(new Mouse(this));
@@ -125,18 +128,19 @@ public class Demo extends Canvas implements Runnable {
 		int top = 15;
 		int lineSpace = 15;
 		
+		g.setFont(font);
 		g.setColor(Color.white);
 		g.drawString("Help ", left, top);
-		g.drawString("  g: hold for gravity", left, top += lineSpace);
-		g.drawString("  s: spawner", left, top += lineSpace);
-		g.drawString("    leftMouse: set spawner", left, top += lineSpace);
-		g.drawString("    rightMouse: remove spawner", left, top += lineSpace);
-		g.drawString("  w: gravity well", left, top += lineSpace);
-		g.drawString("    leftMouse: add gravity well, drag to set size", left, top += lineSpace);
-		g.drawString("    rightMouse: remove gravity well", left, top += lineSpace);
-		g.drawString("  m: map tiles", left, top += lineSpace);
-		g.drawString("    leftMouse: add wall tile", left, top += lineSpace);
-		g.drawString("    rightMouse: remove wall tile", left, top += lineSpace);
+		g.drawString("  G : hold for gravity", left, top += lineSpace);
+		g.drawString("  S : particle spawner", left, top += lineSpace);
+		g.drawString("    left-Mouse: set spawner", left, top += lineSpace);
+		g.drawString("    right-Mouse: remove spawner", left, top += lineSpace);
+		g.drawString("  W : gravity well", left, top += lineSpace);
+		g.drawString("    left-Mouse: drag to add gravity well", left, top += lineSpace);
+		g.drawString("    right-Mouse: remove gravity well", left, top += lineSpace);
+		g.drawString("  M : map tiles", left, top += lineSpace);
+		g.drawString("    left-Mouse: add wall tile", left, top += lineSpace);
+		g.drawString("    right-Mouse: remove wall tile", left, top += lineSpace);
 	}
 
 	public static void main(String[] args) {
