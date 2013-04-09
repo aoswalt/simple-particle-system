@@ -5,6 +5,12 @@ import com.angergames.particlesystem.gfx.Colors;
 import com.angergames.particlesystem.level.Map;
 import com.angergames.particlesystem.util.math.Vec2;
 
+/**
+ * Particle.java
+ * Purpose: Maintain and manage an individual particle.
+ * 
+ * @author Adam Oswalt
+ */
 public class Particle {
 	private static final int LIFETIME = 80;
 	private static final int NEWCOLOR = 0xFFFFFFFF;

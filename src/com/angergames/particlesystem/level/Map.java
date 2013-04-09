@@ -6,6 +6,12 @@ import com.angergames.particlesystem.particles.Particle;
 import com.angergames.particlesystem.util.Quadtree;
 import com.angergames.particlesystem.util.math.Vec2;
 
+/**
+ * Map.java
+ * Purpose: Handles the wall tiles and maintains collision tree.
+ * 
+ * @author Adam Oswalt
+ */
 public class Map {
 	
 	public static final int TILE_SIZE = 16;

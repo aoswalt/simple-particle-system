@@ -2,6 +2,12 @@ package com.angergames.particlesystem.gfx;
 
 import com.angergames.particlesystem.util.math.Math2;
 
+/**
+ * Colors.java
+ * Purpose: Provide methods to manipulate hex colors.
+ * 
+ * @author Adam Oswalt
+ */
 public class Colors {
 	
 	public static int blend(int newColor, int oldColor, double percent) {

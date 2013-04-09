@@ -7,6 +7,12 @@ import com.angergames.particlesystem.level.Map;
 import com.angergames.particlesystem.particles.Particle;
 import com.angergames.particlesystem.util.math.Vec2;
 
+/**
+ * Quadtree.java
+ * Purpose: Quadtree for handling possible collisions.
+ * 
+ * @author Adam Oswalt
+ */
 public class Quadtree {
 	private final int MAX_OBJECTS = 25;
 	private final int MAX_DEPTH = 7;

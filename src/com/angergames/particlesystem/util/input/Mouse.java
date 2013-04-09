@@ -12,6 +12,12 @@ import javax.swing.SwingUtilities;
 import com.angergames.particlesystem.Demo;
 import com.angergames.particlesystem.util.math.Vec2;
 
+/**
+ * Mouse.java
+ * Purpose: Handle mouse input.
+ * 
+ * @author Adam Oswalt
+ */
 public class Mouse implements MouseListener {
 	
 	private static Component component;

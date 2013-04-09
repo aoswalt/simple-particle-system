@@ -1,5 +1,11 @@
 package com.angergames.particlesystem.util.math;
 
+/**
+ * Vec2.java
+ * Purpose: 2D Vector object and operations.
+ * 
+ * @author Adam Oswalt
+ */
 public class Vec2 {
 	public double x;
 	public double y;

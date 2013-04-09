@@ -3,6 +3,12 @@ package com.angergames.particlesystem.util.input;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * Keys.java
+ * Purpose: Handle keyboard input.
+ * 
+ * @author Adam Oswalt
+ */
 public class Keys implements KeyListener {
 	
 	public static boolean g;

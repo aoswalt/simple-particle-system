@@ -14,6 +14,12 @@ import com.angergames.particlesystem.particles.ParticleSystem;
 import com.angergames.particlesystem.util.input.Keys;
 import com.angergames.particlesystem.util.input.Mouse;
 
+/**
+ * Demo.java
+ * Purpose: Entry point and program loop for the Particle System.
+ * 
+ * @author Adam Oswalt
+ */
 public class Demo extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
 	

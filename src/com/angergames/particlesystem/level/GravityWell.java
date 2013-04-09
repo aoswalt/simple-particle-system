@@ -4,6 +4,12 @@ import com.angergames.particlesystem.gfx.Bitmap;
 import com.angergames.particlesystem.gfx.Colors;
 import com.angergames.particlesystem.util.math.Vec2;
 
+/**
+ * GravityWell.java
+ * Purpose: Maintain and manage a gravity well.
+ * 
+ * @author Adam Oswalt
+ */
 public class GravityWell {
 	
 	public Vec2 pos = new Vec2();
@@ -35,7 +41,7 @@ public class GravityWell {
 			for(int y = 0; y < img.h; y++) {
 				double dist = center.distanceTo(x, y);
 				
-				img.pixels[(int)(x + y * img.w)] = Colors.blend(0, 0xFF220099, dist / mass);
+				img.pixels[(int)(x + y * img.w)] = Colors.blend(0, 0xBB220099, dist / mass);
 			}
 		}
 	}

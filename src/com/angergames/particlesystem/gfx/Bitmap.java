@@ -1,5 +1,11 @@
 package com.angergames.particlesystem.gfx;
 
+/**
+ * Bitmap.java
+ * Purpose: Handle a renderable image.
+ * 
+ * @author Adam Oswalt
+ */
 public class Bitmap {
 	
 	public int w;

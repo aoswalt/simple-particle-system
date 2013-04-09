@@ -11,6 +11,12 @@ import com.angergames.particlesystem.util.input.Mouse;
 import com.angergames.particlesystem.util.math.Math2;
 import com.angergames.particlesystem.util.math.Vec2;
 
+/**
+ * ParticleSystem.java
+ * Purpose: The main working class of the Particle System.
+ * 
+ * @author Adam Oswalt
+ */
 public class ParticleSystem {
 	
 	private static final int PARTICLE_COUNT = 1000;
@@ -33,6 +39,8 @@ public class ParticleSystem {
 	private boolean canPlaceGravityWell = true;
 	private boolean settingMass = false;
 	private GravityWell settingWell;
+	
+	private double wellArtificalInflateMod = 1.4;	//modifier to make visuals match
 	
 	public ParticleSystem(int width, int height) {
 		this.width = width;
@@ -78,6 +86,17 @@ public class ParticleSystem {
 							p.acc.add(wellDir);
 						}
 					}
+				}
+				
+				if(settingWell != null) {
+					double dist = p.pos.distanceTo(settingWell.pos);
+					wellDir.add(settingWell.pos).subtract(p.pos).normalize();
+
+					double gravAcc = gravityConst * settingWell.mass / (dist * dist);
+					gravAcc = Math2.clamp(0.025, 0.25, gravAcc);
+					wellDir.scale(gravAcc);
+					
+					p.acc.add(wellDir);
 				}
 				
 				p.update(delta);
@@ -128,6 +147,8 @@ public class ParticleSystem {
 		} else if((!Keys.w || !Mouse.leftPressed) && settingMass){
 			canPlaceGravityWell = true;
 			settingMass = false;
+			settingWell.setMass(settingWell.mass * wellArtificalInflateMod);
+			//XXX should be handled differently
 			settingWell.updateImage();
 			settingWell.removed = false;
 			settingWell = null;
