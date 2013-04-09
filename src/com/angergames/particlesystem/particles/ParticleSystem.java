@@ -125,9 +125,12 @@ public class ParticleSystem {
 			}
 			canPlaceGravityWell = false;
 			settingMass = true;
-		} else if(!Keys.w || !Mouse.leftPressed){
+		} else if((!Keys.w || !Mouse.leftPressed) && settingMass){
 			canPlaceGravityWell = true;
 			settingMass = false;
+			settingWell.updateImage();
+			settingWell.removed = false;
+			settingWell = null;
 		}
 		
 		if(Keys.w && Mouse.leftPressed && !canPlaceGravityWell && settingMass) {
@@ -193,23 +196,24 @@ public class ParticleSystem {
 	}
 	
 	private void renderMap() {
-		Vec2 dist = new Vec2();
+		for(GravityWell w : wells) {
+			if(!w.removed) {
+				w.renderTo(screen);
+			}
+		}
+		
 		for(int x = 0; x < width; x++) {
 			for(int y = 0; y < height; y++) {
+				if(settingWell != null) {
+					double dist = settingWell.pos.distanceTo(x, y);
+					//only override the pixels within range
+					if(dist <= settingWell.mass) {
+						screen.pixels[x + y * width] = Colors.blend(0, 0x220099, dist / settingWell.mass);
+					}
+				}
 				
 				if(map.isActiveTile(x, y)) {
 					screen.pixels[x + y * width] = Map.TILE_COLOR;
-				} else if(!wells.isEmpty()){
-					for(GravityWell w : wells) {
-						if(!w.removed) {
-							dist.setTo(w.pos).subtract(x, y);
-							if(dist.length <= 2) {
-								//screen.pixels[x + y * width] = 0xFF0000;
-							} else if(dist.length <= w.mass) {
-								screen.pixels[x + y * width] = Colors.blend(0, 0x220099, dist.length / w.mass);
-							}
-						}
-					}
 				}
 				
 				if(Keys.m) {

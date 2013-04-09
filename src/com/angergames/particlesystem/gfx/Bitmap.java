@@ -27,6 +27,10 @@ public class Bitmap {
 		}
 	}
 	
+	public void render(Bitmap bm, double xPos, double yPos) {
+		render(bm, (int)xPos, (int)yPos);
+	}
+	
 	public void render(Bitmap bm, int xPos, int yPos) {
 		for(int x = 0; x < bm.w; x++) {
 			int xPix = xPos + x;
